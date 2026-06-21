@@ -65,6 +65,56 @@ export default function PredictionResult({
 
   const lastInteraction = result.interactions?.[0]?.date || new Date().toISOString()
 
+  const [checkedActions, setCheckedActions] = useState<Record<string, boolean>>({})
+
+  const toggleAction = (actionKey: string) => {
+    setCheckedActions(prev => ({
+      ...prev,
+      [actionKey]: !prev[actionKey]
+    }))
+  }
+
+  const recommendationConfigs: Record<string, { summary: string; actions: string[] }> = {
+    'Prospecting': {
+      summary: 'AI Recommendation: Prospecting detected. Follow up within 3 days to increase engagement.',
+      actions: [
+        '✉️ Send follow-up email with collateral',
+        '📞 Schedule discovery call to understand pain points',
+        '👥 Identify decision makers & key stakeholders',
+      ],
+    },
+    'Engaging': {
+      summary: 'AI Recommendation: Client is actively evaluating. Send proposal and arrange stakeholder meeting.',
+      actions: [
+        '💻 Schedule detailed product demo',
+        '📄 Send tailored pricing proposal',
+        '📂 Share technical documents & customer case studies',
+      ],
+    },
+    'Won': {
+      summary: 'AI Recommendation: Deal successfully won! Begin onboarding and project initiation.',
+      actions: [
+        '✍️ Send final contract & billing details',
+        '📢 Notify implementation & customer success teams',
+        '🤝 Schedule onboarding kickoff meeting',
+        '📊 Mark revenue forecast as secured in CRM',
+      ],
+    },
+    'Lost': {
+      summary: 'AI Recommendation: Deal marked as lost. Capture insights and schedule future re-engagement.',
+      actions: [
+        '🔍 Capture detailed loss reason (competitor, budget, features)',
+        '📢 Notify sales manager for post-mortem review',
+        '⏰ Create re-engagement reminder in calendar for 90 days',
+      ],
+    },
+  }
+
+  const rec = recommendationConfigs[result.predicted_stage] || {
+    summary: 'AI Recommendation: Review deal progress and establish next steps.',
+    actions: ['✉️ Follow up with client', '📅 Update CRM timeline'],
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -116,6 +166,40 @@ export default function PredictionResult({
           <p className="text-xs text-gray-500 mt-2">
             {confidencePercent >= 80 ? '✅ High confidence prediction' : confidencePercent >= 60 ? '⚠️ Moderate confidence' : '❓ Low confidence - review manually'}
           </p>
+        </div>
+      </div>
+
+      {/* AI Next Best Action Card */}
+      <div className="rounded-xl border border-purple-500/20 bg-gradient-to-br from-[#1a0a2e] to-[#16213e] p-8">
+        <h4 className="text-lg font-semibold text-gray-300 mb-2 flex items-center gap-2">
+          <span>🧠</span> AI Next Best Action
+        </h4>
+        <p className="text-sm font-semibold text-purple-300 mb-4 bg-purple-950/20 border border-purple-900/30 p-3 rounded-lg">
+          {rec.summary}
+        </p>
+        <div className="space-y-3">
+          {rec.actions.map((action, index) => {
+            const actionKey = `${result.deal_id}-${result.predicted_stage}-${index}`
+            const isChecked = !!checkedActions[actionKey]
+            return (
+              <label
+                key={index}
+                className={`flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer ${
+                  isChecked
+                    ? 'border-green-500/30 bg-green-500/5 text-slate-500 line-through'
+                    : 'border-slate-800 bg-slate-900/30 text-slate-300 hover:border-purple-500/30 hover:bg-slate-900/50'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={() => toggleAction(actionKey)}
+                  className="rounded border-slate-700 bg-slate-850 text-purple-600 focus:ring-purple-500 focus:ring-offset-slate-900 w-4 h-4"
+                />
+                <span className="text-sm font-medium">{action}</span>
+              </label>
+            )
+          })}
         </div>
       </div>
 

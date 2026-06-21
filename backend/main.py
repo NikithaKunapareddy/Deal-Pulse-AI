@@ -190,6 +190,19 @@ async def predict(request: PredictRequest):
         cursor = conn.cursor()
         
         try:
+            # Validate user_id exists in the users table
+            valid_user_id = None
+            if request.user_id is not None:
+                if is_postgres:
+                    cursor.execute("SELECT id FROM users WHERE id = %s;", (request.user_id,))
+                else:
+                    cursor.execute("SELECT id FROM users WHERE id = ?;", (request.user_id,))
+                row = cursor.fetchone()
+                if row:
+                    valid_user_id = request.user_id
+                else:
+                    logger.warning(f"user_id {request.user_id} not found in users table, storing with NULL")
+
             if is_postgres:
                 cursor.execute(
                     """
@@ -207,7 +220,7 @@ async def predict(request: PredictRequest):
                         result["confidence"],
                         json.dumps(result["all_scores"]),
                         json.dumps(result["top_words"]),
-                        request.user_id
+                        valid_user_id
                     )
                 )
                 pred_id = cursor.fetchone()[0]
@@ -228,7 +241,7 @@ async def predict(request: PredictRequest):
                         result["confidence"],
                         json.dumps(result["all_scores"]),
                         json.dumps(result["top_words"]),
-                        request.user_id
+                        valid_user_id
                     )
                 )
                 pred_id = cursor.lastrowid

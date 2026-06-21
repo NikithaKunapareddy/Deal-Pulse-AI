@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 
 class InteractionModel(BaseModel):
@@ -14,7 +14,7 @@ class InteractionModel(BaseModel):
 class PredictRequest(BaseModel):
     deal_id:      str = Field(..., example="D001")
     crm_notes:    str = Field(..., example="Sent the proposal and pricing document to the client today.")
-    user_id:      int = Field(1, example=1)  # ID of user creating the prediction
+    user_id:      Optional[int] = Field(None, example=1)  # ID of user creating the prediction (optional)
     client_name:  str = None
     deal_value:   float = 0.0
     industry:     str = None
@@ -48,6 +48,7 @@ class TopWord(BaseModel):          # ← ADDED: proper schema for top words
 
 
 class PredictResponse(BaseModel):
+    id:               Optional[int] = None
     deal_id:          str
     predicted_stage:  str
     confidence:       float

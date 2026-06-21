@@ -8,6 +8,7 @@ import PipelineOverview from '@/components/PipelineOverview'
 import RecentPredictions from '@/components/RecentPredictions'
 import RealtimeActivityFeed from '@/components/RealtimeActivityFeed'
 import AnalyticsDashboard from '@/components/AnalyticsDashboard'
+import DealsKanbanBoard from '@/components/DealsKanbanBoard'
 import { fetchRecentPredictions, fetchPipelineStats, fetchUsers, User, createUser } from '@/lib/api'
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
   const [predictions, setPredictions] = useState([])
   const [loading, setLoading] = useState(true)
   const [showIntro, setShowIntro] = useState(true)
+  const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban')
   
   const [users, setUsers] = useState<User[]>([])
   const [currentUser, setCurrentUser] = useState<User | null>(null)
@@ -304,8 +306,45 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Recent Predictions Table */}
-            <RecentPredictions predictions={predictions} loading={loading} />
+            {/* Pipeline Stage Kanban vs List View */}
+            <div className="mt-8 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <span>⚡</span> Pipeline Stage Visualizer
+                  </h3>
+                  <p className="text-xs text-slate-400">See your active deals and their predicted stages in real-time</p>
+                </div>
+                <div className="flex bg-slate-900 border border-slate-700/50 rounded-xl p-1 self-start sm:self-auto">
+                  <button
+                    onClick={() => setViewMode('kanban')}
+                    className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                      viewMode === 'kanban'
+                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Kanban Board
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                      viewMode === 'list'
+                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Recent Predictions
+                  </button>
+                </div>
+              </div>
+
+              {viewMode === 'kanban' ? (
+                <DealsKanbanBoard predictions={predictions} loading={loading} />
+              ) : (
+                <RecentPredictions predictions={predictions} loading={loading} />
+              )}
+            </div>
           </>
         ) : (
           <>

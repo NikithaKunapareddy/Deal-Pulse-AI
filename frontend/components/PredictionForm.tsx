@@ -35,6 +35,7 @@ export default function PredictionForm({ onPredictionComplete, currentUser }: Pr
     industry: '',
   })
 
+  const [crmNotes, setCrmNotes] = useState('')
   const [interactions, setInteractions] = useState<Interaction[]>([])
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
@@ -80,21 +81,26 @@ export default function PredictionForm({ onPredictionComplete, currentUser }: Pr
 
     try {
       // Build comprehensive CRM notes from all data
-      let crmNotes = `Client: ${dealInfo.clientName || 'Unknown'}\n`
-      crmNotes += `Deal Value: $${dealInfo.dealValue || 0}\n`
-      crmNotes += `Industry: ${dealInfo.industry || 'Unknown'}\n\n`
-      crmNotes += `Interaction History:\n`
+      // Start with the direct CRM notes field (most important for prediction)
+      let crmNotesText = crmNotes.trim()
+      if (crmNotesText) {
+        crmNotesText += '\n\n'
+      }
+      crmNotesText += `Client: ${dealInfo.clientName || 'Unknown'}\n`
+      crmNotesText += `Deal Value: $${dealInfo.dealValue || 0}\n`
+      crmNotesText += `Industry: ${dealInfo.industry || 'Unknown'}\n\n`
+      crmNotesText += `Interaction History:\n`
 
       interactions.forEach((int) => {
-        crmNotes += `- ${int.date} [${int.type.toUpperCase()}] ${int.subject}`
-        if (int.participant) crmNotes += ` with ${int.participant}`
-        if (int.duration) crmNotes += ` (${int.duration}m)`
-        crmNotes += `\n  ${int.notes}\n`
+        crmNotesText += `- ${int.date} [${int.type.toUpperCase()}] ${int.subject}`
+        if (int.participant) crmNotesText += ` with ${int.participant}`
+        if (int.duration) crmNotesText += ` (${int.duration}m)`
+        crmNotesText += `\n  ${int.notes}\n`
       })
 
       const response = await predict({
         deal_id: dealInfo.dealId,
-        crm_notes: crmNotes,
+        crm_notes: crmNotesText,
         user_id: currentUser.id,
         client_name: dealInfo.clientName,
         deal_value: dealInfo.dealValue,
@@ -178,6 +184,31 @@ export default function PredictionForm({ onPredictionComplete, currentUser }: Pr
                 className="w-full bg-[#0a0015] rounded border border-purple/30 text-white px-4 py-2 focus:border-purple-500 outline-none transition-all"
               />
             </div>
+          </div>
+        </div>
+
+        {/* CRM Notes Section */}
+        <div className="rounded-xl border border-blue-500/30 bg-gradient-to-br from-[#1a0a2e] to-[#16213e] p-8">
+          <h2 className="text-2xl font-bold mb-2 text-white">📝 CRM Notes</h2>
+          <p className="text-gray-400 text-sm mb-4">Describe the current deal stage in your own words. This is used directly for AI prediction.</p>
+          <textarea
+            value={crmNotes}
+            onChange={(e) => setCrmNotes(e.target.value)}
+            placeholder="e.g. Initial outreach email sent. Waiting for response. No meeting scheduled yet."
+            rows={4}
+            className="w-full bg-[#0a0015] rounded border border-blue-500/30 text-white px-4 py-3 focus:border-blue-500 outline-none transition-all resize-none placeholder-gray-600"
+          />
+          <div className="mt-2 flex flex-wrap gap-2">
+            {['Initial outreach email sent. Waiting for response.', 'Demo completed. Pricing discussed.', 'Contract signed. Purchase order received.', 'Lost to competitor.'].map((example) => (
+              <button
+                key={example}
+                type="button"
+                onClick={() => setCrmNotes(example)}
+                className="text-xs px-3 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-300 hover:bg-blue-800/50 transition"
+              >
+                {example.length > 40 ? example.slice(0, 37) + '...' : example}
+              </button>
+            ))}
           </div>
         </div>
 
