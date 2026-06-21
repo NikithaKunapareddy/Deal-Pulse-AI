@@ -118,10 +118,10 @@ class Predictor:
         notes_lower = crm_notes.lower()
         
         # Keyword-based rules for common patterns
-        won_keywords = ["contract signed", "deployment", "legal review completed", "closed won", "customer approved", "final pricing approved"]
+        won_keywords = ["contract signed", "purchase order", "deployment", "legal review completed", "closed won", "customer approved", "final pricing approved"]
         lost_keywords = ["lost to", "lost the deal", "closed lost", "deal lost", "no longer interested", "went with competitor"]
-        prospecting_keywords = ["discovery call", "initial contact", "lead identified", "first meeting", "scheduled a demo", "prospecting", "cold outreach", "needs to check their budget", "budget first"]
-        engaging_keywords = ["proposal sent", "active discussion", "demo presented", "pricing discussion", "negotiating", "contract review", "engaging"]
+        prospecting_keywords = ["initial outreach", "email sent", "waiting for response", "no meeting scheduled", "discovery call", "initial contact", "lead identified", "first meeting", "scheduled a demo", "prospecting", "cold outreach", "needs to check their budget", "budget first"]
+        engaging_keywords = ["demo completed", "pricing discussed", "contract negotiation", "proposal sent", "active discussion", "demo presented", "negotiating", "contract review", "engaging"]
         
         # Check for definitive signals
         if any(keyword in notes_lower for keyword in won_keywords):
