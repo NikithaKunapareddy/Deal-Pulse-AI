@@ -1,0 +1,26 @@
+# DealPulse AI Git Ignore Configuration
+
+# Dependencies and caches
+node_modules/
+.next/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Local databases and raw datasets
+backend/data/dealpulse.db
+backend/data/processed/
+backend/data/raw/
+
+# Model files
+backend/data/models/*.pt
+backend/data/models/*.pkl
+
+# Environment and sensitive keys
+.env
+.env.local
+.env.development
+.env.production
+backend/.env
+frontend/.env.local
+frontend/.env
