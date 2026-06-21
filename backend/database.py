@@ -196,29 +196,27 @@ def init_db():
         conn.commit()
         print("[database] Tables initialized successfully")
 
-        # Seed users if empty
-        cursor.execute("SELECT COUNT(*) FROM users;")
-        count = cursor.fetchone()[0]
-        if count == 0:
-            print("[database] Seeding initial users...")
-            users = [
-                ("sarah_rep", "representative", "Sarah Johnson"),
-                ("david_mgr", "manager", "David Manager"),
-                ("alex_rep", "representative", "Alex Chen")
-            ]
-            for username, role, full_name in users:
-                if is_postgres:
-                    cursor.execute(
-                        "INSERT INTO users (username, role, full_name) VALUES (%s, %s, %s) ON CONFLICT (username) DO NOTHING;",
-                        (username, role, full_name)
-                    )
-                else:
-                    cursor.execute(
-                        "INSERT OR IGNORE INTO users (username, role, full_name) VALUES (?, ?, ?);",
-                        (username, role, full_name)
-                    )
-            conn.commit()
-            print("[database] Users seeded")
+        # Seed users (unconditional insert with ignore conflict)
+        print("[database] Syncing default users...")
+        users = [
+            ("sarah_rep", "representative", "Sarah Johnson"),
+            ("david_mgr", "manager", "David Manager"),
+            ("alex_rep", "representative", "Alex Chen"),
+            ("nikitha_rep", "representative", "Nikitha Kunapareddy")
+        ]
+        for username, role, full_name in users:
+            if is_postgres:
+                cursor.execute(
+                    "INSERT INTO users (username, role, full_name) VALUES (%s, %s, %s) ON CONFLICT (username) DO NOTHING;",
+                    (username, role, full_name)
+                )
+            else:
+                cursor.execute(
+                    "INSERT OR IGNORE INTO users (username, role, full_name) VALUES (?, ?, ?);",
+                    (username, role, full_name)
+                )
+        conn.commit()
+        print("[database] Default users sync complete")
 
         # Seed predictions if empty
         cursor.execute("SELECT COUNT(*) FROM predictions;")

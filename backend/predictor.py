@@ -120,6 +120,8 @@ class Predictor:
         # Keyword-based rules for common patterns
         won_keywords = ["contract signed", "deployment", "legal review completed", "closed won", "customer approved", "final pricing approved"]
         lost_keywords = ["lost to", "lost the deal", "closed lost", "deal lost", "no longer interested", "went with competitor"]
+        prospecting_keywords = ["discovery call", "initial contact", "lead identified", "first meeting", "scheduled a demo", "prospecting", "cold outreach", "needs to check their budget", "budget first"]
+        engaging_keywords = ["proposal sent", "active discussion", "demo presented", "pricing discussion", "negotiating", "contract review", "engaging"]
         
         # Check for definitive signals
         if any(keyword in notes_lower for keyword in won_keywords):
@@ -145,6 +147,32 @@ class Predictor:
                 "top_words": [
                     {"word": "lost", "score": 0.95},
                     {"word": "competitor", "score": 0.95}
+                ]
+            }
+
+        if any(keyword in notes_lower for keyword in engaging_keywords):
+            print(f"[predictor] Detected Engaging deal (keyword match)")
+            return {
+                "deal_id": deal_id,
+                "predicted_stage": "Engaging",
+                "confidence": 0.92,
+                "all_scores": {s: 0.92 if s == "Engaging" else 0.02 for s in self.stage_names},
+                "top_words": [
+                    {"word": "demo", "score": 0.92},
+                    {"word": "proposal", "score": 0.85}
+                ]
+            }
+
+        if any(keyword in notes_lower for keyword in prospecting_keywords):
+            print(f"[predictor] Detected Prospecting deal (keyword match)")
+            return {
+                "deal_id": deal_id,
+                "predicted_stage": "Prospecting",
+                "confidence": 0.88,
+                "all_scores": {s: 0.88 if s == "Prospecting" else 0.03 for s in self.stage_names},
+                "top_words": [
+                    {"word": "discovery", "score": 0.88},
+                    {"word": "scheduled", "score": 0.80}
                 ]
             }
         
