@@ -142,45 +142,171 @@ export default function Home() {
     }
   }
 
+  const [introPhase, setIntroPhase] = useState(0)
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-purple-950/20 to-slate-950">
-      {/* Animated Intro Screen */}
+    <main className="min-h-screen" style={{ background: 'linear-gradient(135deg, #060010 0%, #0d0024 50%, #060010 100%)' }}>
+
+      {/* ── Animated Intro Splash ────────────────────────────── */}
       {showIntro && (
-        <div className="fixed inset-0 z-50 bg-gradient-to-b from-slate-950 via-purple-950/50 to-slate-950 flex items-center justify-center overflow-hidden transition-all duration-1000">
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 to-transparent"></div>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+          style={{ background: 'radial-gradient(ellipse at 50% 40%, #1a0840 0%, #0a0020 50%, #060010 100%)' }}
+        >
+          {/* Starfield dots */}
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-white animate-twinkle"
+              style={{
+                width: `${Math.random() * 2 + 1}px`,
+                height: `${Math.random() * 2 + 1}px`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${Math.random() * 2 + 1.5}s`,
+              }}
+            />
+          ))}
+
+          {/* Big ambient glows */}
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px] animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-pink-600/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-violet-800/8 rounded-full blur-[80px]" />
+
+          {/* Floating deal cards — left */}
+          <div className="absolute left-[6%] top-[20%] float-card-1 hidden lg:block">
+            <div className="w-52 glass rounded-2xl border border-purple-500/20 p-4 shadow-2xl" style={{ transform: 'rotate(-8deg)' }}>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-xs">🔍</div>
+                <span className="text-blue-300 text-xs font-bold uppercase tracking-wider">Prospecting</span>
+              </div>
+              <p className="text-white font-bold text-sm">Tesla Corp</p>
+              <p className="text-slate-400 text-xs mt-0.5">DEAL-2024-001</p>
+              <div className="mt-3 flex justify-between items-center">
+                <span className="text-green-400 font-black text-sm">$95K</span>
+                <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/30">88%</span>
+              </div>
+            </div>
           </div>
 
-          <div className="relative z-10 text-center space-y-6 px-6">
-            <div className="flex justify-center mb-8">
+          {/* Floating deal cards — right */}
+          <div className="absolute right-[6%] top-[15%] float-card-2 hidden lg:block">
+            <div className="w-52 glass rounded-2xl border border-green-500/20 p-4 shadow-2xl" style={{ transform: 'rotate(7deg)' }}>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-xs">🎉</div>
+                <span className="text-green-300 text-xs font-bold uppercase tracking-wider">Won</span>
+              </div>
+              <p className="text-white font-bold text-sm">Apple Inc</p>
+              <p className="text-slate-400 text-xs mt-0.5">DEAL-2024-048</p>
+              <div className="mt-3 flex justify-between items-center">
+                <span className="text-green-400 font-black text-sm">$220K</span>
+                <span className="text-xs bg-green-500/20 text-green-300 px-2 py-0.5 rounded-full border border-green-500/30">99%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Floating deal cards — bottom left */}
+          <div className="absolute left-[12%] bottom-[18%] float-card-3 hidden lg:block">
+            <div className="w-44 glass rounded-2xl border border-yellow-500/20 p-4 shadow-2xl" style={{ transform: 'rotate(-4deg)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center text-xs">💬</div>
+                <span className="text-yellow-300 text-xs font-bold uppercase tracking-wider">Engaging</span>
+              </div>
+              <p className="text-white font-bold text-sm">Microsoft</p>
+              <div className="mt-2 flex justify-between items-center">
+                <span className="text-green-400 font-black text-sm">$150K</span>
+                <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-500/30">92%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Floating deal cards — bottom right */}
+          <div className="absolute right-[10%] bottom-[20%] float-card-1 hidden lg:block" style={{ animationDelay: '2s' }}>
+            <div className="w-44 glass rounded-2xl border border-red-500/20 p-4 shadow-2xl" style={{ transform: 'rotate(5deg)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center text-xs">❌</div>
+                <span className="text-red-300 text-xs font-bold uppercase tracking-wider">Lost</span>
+              </div>
+              <p className="text-white font-bold text-sm">Uber</p>
+              <div className="mt-2 flex justify-between items-center">
+                <span className="text-green-400 font-black text-sm">$45K</span>
+                <span className="text-xs bg-red-500/20 text-red-300 px-2 py-0.5 rounded-full border border-red-500/30">95%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Center content */}
+          <div className="relative z-10 text-center px-6 space-y-8 animate-fade-in">
+
+            {/* Logo orb with orbiting badges */}
+            <div className="relative flex justify-center mb-6">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-3xl blur-3xl opacity-75 animate-pulse" style={{ animationDuration: '2s' }}></div>
-                <div className="relative w-32 h-32 rounded-3xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center text-7xl shadow-2xl animate-bounce" style={{ animationDuration: '2s' }}>
-                  📊
+                {/* Pulse rings */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-28 h-28 rounded-full border border-purple-500/25 animate-ping" style={{ animationDuration: '2s' }} />
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-40 h-40 rounded-full border border-purple-500/12 animate-ping" style={{ animationDuration: '2.8s', animationDelay: '0.4s' }} />
+                </div>
+
+                {/* Main logo */}
+                <div className="relative w-24 h-24 rounded-3xl shadow-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #ec4899 50%, #f97316 100%)' }}>
+                  <div className="absolute inset-0 rounded-3xl" style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #ec4899 50%, #f97316 100%)', filter: 'blur(20px)', opacity: 0.6 }} />
+                  <span className="relative text-5xl">📊</span>
+                </div>
+
+                {/* Orbiting stage pills */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="orbit-1">
+                    <div className="px-2 py-0.5 rounded-full bg-blue-950 border border-blue-500/40 text-blue-300 text-[9px] font-bold whitespace-nowrap">🔍 Prospecting</div>
+                  </div>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="orbit-2">
+                    <div className="px-2 py-0.5 rounded-full bg-green-950 border border-green-500/40 text-green-300 text-[9px] font-bold whitespace-nowrap">🎉 Won</div>
+                  </div>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="orbit-3">
+                    <div className="px-2 py-0.5 rounded-full bg-yellow-950 border border-yellow-500/40 text-yellow-300 text-[9px] font-bold whitespace-nowrap">💬 Engaging</div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <h1 className="text-7xl font-black mb-4 tracking-tighter">
-                <span className="bg-gradient-to-r from-purple-300 via-pink-300 to-orange-300 bg-clip-text text-transparent drop-shadow-lg">
-                  DealPulse
-                </span>
+            {/* Title */}
+            <div className="space-y-2">
+              <h1 className="text-6xl sm:text-7xl font-black tracking-tight">
+                <span className="text-shimmer">DealPulse</span>
+                <span className="ml-4 text-white">AI</span>
               </h1>
-              <p className="text-4xl font-bold">
-                <span className="bg-gradient-to-r from-yellow-200 to-orange-200 bg-clip-text text-transparent">
-                  AI
-                </span>
+              <p className="text-slate-300 text-lg font-medium tracking-wide">
+                Smart CRM Sales Pipeline Intelligence
               </p>
             </div>
 
-            <p className="text-xl text-gray-300 mt-8 max-w-2xl mx-auto">
-              Real-time AI Sales Pipeline Analysis
-            </p>
+            {/* Live stats row */}
+            <div className="flex justify-center gap-8 text-center">
+              {[
+                { label: 'Deals Tracked', value: '2,400+' },
+                { label: 'Accuracy', value: '94%' },
+                { label: 'Stages', value: '4' },
+              ].map((s) => (
+                <div key={s.label} className="animate-slide-up">
+                  <p className="text-2xl font-black text-white">{s.value}</p>
+                  <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mt-0.5">{s.label}</p>
+                </div>
+              ))}
+            </div>
 
-            <p className="text-sm text-gray-400 mt-6 tracking-widest">Initializing AI Engine...</p>
+            {/* Loading bar */}
+            <div className="flex flex-col items-center gap-2 pt-2">
+              <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 rounded-full animate-shimmer" style={{ width: '100%' }} />
+              </div>
+              <p className="text-xs text-slate-500 tracking-widest uppercase font-semibold animate-pulse">Initializing AI Engine...</p>
+            </div>
           </div>
         </div>
       )}

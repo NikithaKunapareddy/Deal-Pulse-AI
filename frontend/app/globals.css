@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,61 +15,169 @@ html {
 }
 
 body {
-  background: linear-gradient(135deg, #0a0015 0%, #1a0a2e 100%);
+  background: #060010;
   font-family: 'Plus Jakarta Sans', sans-serif;
   color: #f0e6ff;
   min-height: 100vh;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.4); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,0.7); }
 
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.5);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(124, 58, 237, 0.8);
-}
-
+/* ── Keyframes ─────────────────────────────────────────── */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
 }
 
-@keyframes scaleUp {
-  from {
-    opacity: 0;
-    transform: scale(0.85) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.8s ease-in-out;
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0px)    rotate(var(--r, -6deg)); }
+  50%       { transform: translateY(-14px) rotate(var(--r, -6deg)); }
 }
 
-.animate-scale-up {
-  animation: scaleUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+@keyframes floatCard2 {
+  0%, 100% { transform: translateY(0px)   rotate(var(--r, 5deg)); }
+  50%       { transform: translateY(-10px) rotate(var(--r, 5deg)); }
 }
 
-.border-3 {
-  border-width: 3px;
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
 }
 
+@keyframes orbit {
+  from { transform: rotate(0deg)   translateX(90px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(90px) rotate(-360deg); }
+}
+
+@keyframes orbit2 {
+  from { transform: rotate(120deg)  translateX(70px) rotate(-120deg); }
+  to   { transform: rotate(480deg)  translateX(70px) rotate(-480deg); }
+}
+
+@keyframes orbit3 {
+  from { transform: rotate(240deg)  translateX(110px) rotate(-240deg); }
+  to   { transform: rotate(600deg)  translateX(110px) rotate(-600deg); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.9); opacity: 0.8; }
+  70%  { transform: scale(1.4); opacity: 0;   }
+  100% { transform: scale(0.9); opacity: 0;   }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes logoReveal {
+  0%   { clip-path: inset(0 100% 0 0); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { clip-path: inset(0 0% 0 0);   opacity: 1; }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes twinkle {
+  0%,100% { opacity: 0.2; transform: scale(0.8); }
+  50%      { opacity: 1;   transform: scale(1.2); }
+}
+
+/* ── Utility classes ───────────────────────────────────── */
+.animate-fade-in    { animation: fadeIn 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+.animate-slide-up   { animation: slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+.animate-shimmer    { animation: shimmer 3s linear infinite; background-size: 200% auto; }
+.animate-spin-slow  { animation: spinSlow 12s linear infinite; }
+.animate-twinkle    { animation: twinkle 2s ease-in-out infinite; }
+.animate-scale-up   { animation: fadeIn 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+
+.border-3 { border-width: 3px; }
+
+/* Gradient text shimmer */
+.text-shimmer {
+  background: linear-gradient(90deg, #c084fc, #f472b6, #fb923c, #f472b6, #c084fc);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Animated gradient border */
+.gradient-border {
+  position: relative;
+  background: linear-gradient(#0a0015, #0a0015) padding-box,
+              linear-gradient(135deg, #7c3aed, #ec4899, #f97316) border-box;
+  border: 1.5px solid transparent;
+}
+
+/* Glass card */
+.glass {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Intro floating deal cards */
+.float-card-1 {
+  --r: -8deg;
+  animation: floatCard 4s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.float-card-2 {
+  --r: 6deg;
+  animation: floatCard2 5s ease-in-out infinite;
+  animation-delay: 0.8s;
+}
+.float-card-3 {
+  --r: -4deg;
+  animation: floatCard 6s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+/* Orbiting dots */
+.orbit-1 { animation: orbit  6s linear infinite; }
+.orbit-2 { animation: orbit2 8s linear infinite; }
+.orbit-3 { animation: orbit3 10s linear infinite; }
+
+/* Pulse ring */
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 2px solid rgba(168,85,247,0.5);
+  animation: pulse-ring 2.5s ease-out infinite;
+}
+
+/* Glowing button */
+.btn-glow {
+  box-shadow: 0 0 20px rgba(168,85,247,0.35), 0 0 60px rgba(168,85,247,0.15);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.btn-glow:hover {
+  box-shadow: 0 0 30px rgba(168,85,247,0.55), 0 0 80px rgba(168,85,247,0.25);
+  transform: translateY(-1px);
+}
+
+/* Input focus glow */
+.input-glow:focus {
+  box-shadow: 0 0 0 2px rgba(168,85,247,0.25), 0 0 20px rgba(168,85,247,0.1);
+}
